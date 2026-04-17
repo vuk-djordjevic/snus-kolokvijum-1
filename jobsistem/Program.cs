@@ -76,6 +76,26 @@ for (int i = 0; i < config.ProducerCount; i++)
 Console.WriteLine("System running. Press Enter to exit.");
 Console.ReadLine();
 
+// Demo for GetTopJobs and GetJob
+var topJobs = system.GetTopJobs(3);
+Console.WriteLine("\n--- Top 3 jobs in queue ---");
+foreach (var j in topJobs)
+    Console.WriteLine($"  {j.Id} ({j.Type}, priority {j.Priority})");
+
+var firstInitial = config.InitialJobs.FirstOrDefault();
+if (firstInitial != null)
+{
+    var found = system.GetJob(firstInitial.Id);
+    Console.WriteLine($"\n--- GetJob({firstInitial.Id}) ---");
+    Console.WriteLine(found != null ? $"  First initial job found: {found.Type}, priority {found.Priority}" : "  First initial job not found");
+}
+
+Console.WriteLine("Create job and try to GetJob function");
+var job2 = CreateRandomJob(new Random());
+var handle2 = system.Submit(job2);
+var found2 = system.GetJob(job2.Id);
+Console.WriteLine(found2 != null ? $"Job found: {found2.Type}" : "Job not found");
+
 // Final report
 system.GenerateReport();
 Console.WriteLine("Final report generated.");
